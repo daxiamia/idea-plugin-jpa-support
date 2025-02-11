@@ -1,6 +1,7 @@
 #if(!$package.isEmpty())
 package $package;
 
+import $package.domain.Response;
 #end
 #set($useSwaggerUI = $tablesConfig.isUseSwaggerUIComment())
 #set($useJPA = $tablesConfig.isUseJpa())
@@ -55,52 +56,75 @@ public class ${simpleName} {
     @Autowired
     private $serviceName $serviceVariableName;
 
-    @PostMapping
+    @PostMapping("/$basePath")
     #if($useSwaggerUI)
     @ApiOperation("$save $comment")
     #end
-    public String save(@Valid @RequestBody ${entitySimpleName}${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
-        return ${serviceVariableName}.save(${tablesConfig.voSuffixVariableName}).toString();
+    public Response save(final Authentication authentication, @Valid @RequestBody ${entitySimpleName}${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
+        final Userinfo user = Utils.getUserInfoByToken(authentication);
+        int retId = ${serviceVariableName}.save(user, ${tablesConfig.voSuffixVariableName});
+        return Response.build(200, "success", retId);
     }
 
-    @DeleteMapping("/{id}")
+
+    @DeleteMapping("/$basePath/{id}")
     #if($useSwaggerUI)
     @ApiOperation("$delete $comment")
     #end
-    public void delete(@Valid @NotNull #if($useLombok)@ApiParam("id")#end @PathVariable("id") $primaryKeyDataType id) {
-        ${serviceVariableName}.delete(id);
+    public Response delete$entitySimpleName(@Valid @NotNull #if($useLombok)@ApiParam("id")#end @PathVariable("id") $primaryKeyDataType id) {
+        try {
+            ${serviceVariableName}.delete(id);
+            return Response.build(200, "成功");
+        } catch (Exception e) {
+            return Response.build(1001, e.getMessage());
+        }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/$basePath/{id}")
     #if($useSwaggerUI)
     @ApiOperation("$update $comment")
     #end
-    public void update(@Valid @NotNull #if($useLombok)@ApiParam("id")#end @PathVariable("id") $primaryKeyDataType id,
+    public Response update$entitySimpleName(@Valid @NotNull #if($useLombok)@ApiParam("id")#end @PathVariable("id") $primaryKeyDataType id,
     @Valid @RequestBody ${entitySimpleName}Update${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
-        ${serviceVariableName}.update(id, ${tablesConfig.voSuffixVariableName});
+        try {
+            ${serviceVariableName}.update(id, ${tablesConfig.voSuffixVariableName});
+            return Response.build(200, "成功");
+        } catch (Exception e) {
+            return Response.build(1001, e.getMessage());
+        }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/$basePath/{id}")
     #if($useSwaggerUI)
     @ApiOperation("$getById $comment")
     #end
-    public ${entitySimpleName}${tablesConfig.dtoSuffixName} getById(@Valid @NotNull #if($useLombok)@ApiParam("id")#end @PathVariable("id") $primaryKeyDataType id) {
-        return ${serviceVariableName}.getById(id);
+    public Response<${entitySimpleName}${tablesConfig.dtoSuffixName}> get$entitySimpleNameById(@Valid @NotNull #if($useLombok)@ApiParam("id")#end @PathVariable("id") $primaryKeyDataType id) {
+        try {
+            ${serviceVariableName}.getById(id);
+            return Response.build(200, "成功");
+        } catch (Exception e) {
+            return Response.build(1001, e.getMessage());
+        }
     }
 
-    @GetMapping
+    @GetMapping("/$basePath")
     #if($useSwaggerUI)
     @ApiOperation("$query $comment")
     #end
     #if($useJPA)
-    public Page<${entitySimpleName}${tablesConfig.dtoSuffixName}> query(@Valid ${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
+    public Page<${entitySimpleName}${tablesConfig.dtoSuffixName}> query$entitySimpleName(@Valid ${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
     #end
     #if($useMybatisPlus)
-    public IPage<${entitySimpleName}${tablesConfig.dtoSuffixName}> query(@Valid ${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
+    public IPage<${entitySimpleName}${tablesConfig.dtoSuffixName}> query$entitySimpleName(@Valid ${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
     #end
     #if($useTkMybatis)
-    public Page<${entitySimpleName}${tablesConfig.dtoSuffixName}> query(@Valid ${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
+    public Page<${entitySimpleName}${tablesConfig.dtoSuffixName}> query$entitySimpleName(@Valid ${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
     #end
-        return ${serviceVariableName}.query(${tablesConfig.voSuffixVariableName});
+        try {
+            Page<${entitySimpleName}${tablesConfig.dtoSuffixName}> list = ${serviceVariableName}.query(${tablesConfig.voSuffixVariableName});
+            return Response.build(200, "成功", list);
+        } catch (Exception e) {
+            return Response.build(1001, e.getMessage());
+        }
     }
 }

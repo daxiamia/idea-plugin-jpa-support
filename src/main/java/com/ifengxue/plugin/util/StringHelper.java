@@ -425,8 +425,8 @@ public class StringHelper {
 
   public static String getJakartaEEClassNameOrNot(boolean isUseJakartaEE, String classSimpleName) {
     if (isUseJakartaEE) {
-      return "jakarta.persistence." + classSimpleName;
+      return "jakarta.validation." + classSimpleName;
     }
-    return "javax.persistence." + classSimpleName;
+    return "javax.validation." + classSimpleName;
   }
 }

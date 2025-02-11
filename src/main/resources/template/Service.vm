@@ -27,29 +27,29 @@ public class ${simpleName} {
     @Autowired
     private $repositoryName $repositoryVariableName;
 
-    public $primaryKeyDataType save(${entitySimpleName}${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
+    public $primaryKeyDataType save$entitySimpleName(${entitySimpleName}${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
         ${entitySimpleName} bean = new ${entitySimpleName}();
         BeanUtils.copyProperties(${tablesConfig.voSuffixVariableName}, bean);
         bean = ${repositoryVariableName}.save(bean);
         return bean.${table.primaryColumn.getterMethodName}();
     }
 
-    public void delete($primaryKeyDataType id) {
+    public void delete$entitySimpleName($primaryKeyDataType id) {
         ${repositoryVariableName}.deleteById(id);
     }
 
-    public void update($primaryKeyDataType id, ${entitySimpleName}Update${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
-        $entitySimpleName bean = requireOne(id);
+    public void update$entitySimpleName($primaryKeyDataType id, ${entitySimpleName}Update${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
+        $entitySimpleName bean = requireOne$entitySimpleName(id);
         BeanUtils.copyProperties(${tablesConfig.voSuffixVariableName}, bean);
         ${repositoryVariableName}.save(bean);
     }
 
-    public ${entitySimpleName}${tablesConfig.dtoSuffixName} getById($primaryKeyDataType id) {
-        ${entitySimpleName} original = requireOne(id);
+    public ${entitySimpleName}${tablesConfig.dtoSuffixName} get$entitySimpleNameById($primaryKeyDataType id) {
+        ${entitySimpleName} original = requireOne$entitySimpleName(id);
         return to${tablesConfig.dtoSuffixName}(original);
     }
 
-    public Page<${entitySimpleName}DTO> query(${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
+    public Page<${entitySimpleName}DTO> query$entitySimpleName(${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
         throw new UnsupportedOperationException();
     }
 
@@ -59,7 +59,7 @@ public class ${simpleName} {
         return bean;
     }
 
-    private ${entitySimpleName} requireOne($primaryKeyDataType id) {
+    private ${entitySimpleName} requireOne$entitySimpleName($primaryKeyDataType id) {
         return ${repositoryVariableName}.findById(id)
             .orElseThrow(() -> new java.util.NoSuchElementException("Resource not found: " + id));
     }
