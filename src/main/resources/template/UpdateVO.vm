@@ -5,7 +5,8 @@ package $tablesConfig.voPackageName;
 #set($useLombok = $tablesConfig.isUseLombok())
 #set($useSwaggerUI = $tablesConfig.isUseSwaggerUIComment())
 #set($serializable = $tablesConfig.isSerializable())
-
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 #if($useLombok)
 @lombok.Data
@@ -16,6 +17,7 @@ package $tablesConfig.voPackageName;
 #if($useLombok)
 @lombok.EqualsAndHashCode(callSuper = false)
 #end
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ${table.entityName}Update${tablesConfig.voSuffixName} extends ${table.entityName}${tablesConfig.voSuffixName} #if($serializable) implements java.io.Serializable #end {
     #if($serializable)
     private static final long serialVersionUID = 1L;

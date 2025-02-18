@@ -12,9 +12,8 @@ import lombok.Data;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
-import $stringHelper.getJakartaEEClassNameOrNot(${useJakartaEE}, "NotNull");
-import $stringHelper.getJakartaEEClassNameOrNot(${useJakartaEE}, "NotBlank");
-import $stringHelper.getJakartaEEClassNameOrNot(${useJakartaEE}, "NotEmpty");
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 
 #if($useLombok)
@@ -23,6 +22,7 @@ import $stringHelper.getJakartaEEClassNameOrNot(${useJakartaEE}, "NotEmpty");
 #if($useSwaggerUI)
 @ApiModel("$LocaleContextHolder.format("controller_save") $table.tableComment")
 #end
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ${table.entityName}${tablesConfig.voSuffixName} #if($serializable) implements java.io.Serializable #end {
     #if($serializable)
     private static final long serialVersionUID = 1L;
@@ -34,9 +34,6 @@ public class ${table.entityName}${tablesConfig.voSuffixName} #if($serializable) 
         /**
         * $column.getColumnComment()
         */
-        #end
-        #if(!$column.isNullable())
-        @NotNull(message = "$column.fieldName can not null")
         #end
         #if($column.isNotBlank())
         @NotBlank(message = "$column.fieldName can not blank")
@@ -50,4 +47,6 @@ public class ${table.entityName}${tablesConfig.voSuffixName} #if($serializable) 
         private $column.javaDataType.name $column.fieldName;
 
     #end
+
+
 }

@@ -37,6 +37,12 @@ package $package;
 #foreach($importClass in $importClassList)
 import $importClass;
 #end
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 #if($importClassList)
  ## add empty line
 
@@ -49,6 +55,10 @@ import $importClass;
 #foreach($annotation in $annotationList)
 @$annotation
 #end
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class $simpleName#if(!$parentClass.isEmpty()) extends $parentClass#end#if(!$implementClassList.isEmpty()) implements $empty.join(", ", $implementClassList)#end {
 
 #if($serialVersionUID)
@@ -64,6 +74,7 @@ private static final long serialVersionUID = ${serialVersionUID}L;
 #foreach($annotation in $column.annotations)
 @$annotation
 #end
+@Builder.Default
 private $column.getJavaDataType().getSimpleName() $column.getFieldName()#if($tablesConfig.requireWriteDefaultValue($column)) = $column.getDefaultValue()#end;
 
 #end

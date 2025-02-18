@@ -5,11 +5,14 @@ package $tablesConfig.voPackageName;
 #set($useLombok = $tablesConfig.isUseLombok())
 #set($useSwaggerUI = $tablesConfig.isUseSwaggerUIComment())
 #set($serializable = $tablesConfig.isSerializable())
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 
 #if($useLombok)
 @lombok.Data
 #end
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 #if($useSwaggerUI)
 @io.swagger.annotations.ApiModel("$LocaleContextHolder.format("controller_query") $table.tableComment")
 #end
@@ -31,4 +34,8 @@ public class ${table.entityName}Query${tablesConfig.voSuffixName} #if($serializa
         private $column.javaDataType.name $column.fieldName;
 
     #end
+
+    private int page;
+
+    private int size;
 }

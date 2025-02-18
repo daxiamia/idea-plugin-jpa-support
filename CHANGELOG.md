@@ -2,7 +2,7 @@
 
 # JPA Support Changelog
 
-## [2.2.3]
+## [2.2.5]
 
 ### Fixed
 - override the `getActionUpdateThread` method to avoid error reporting

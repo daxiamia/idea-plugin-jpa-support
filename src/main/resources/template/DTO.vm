@@ -5,6 +5,8 @@ package $tablesConfig.dtoPackageName;
 #set($useLombok = $tablesConfig.isUseLombok())
 #set($useSwaggerUI = $tablesConfig.isUseSwaggerUIComment())
 #set($serializable = $tablesConfig.isSerializable())
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 
 #if($useLombok)
@@ -13,6 +15,7 @@ package $tablesConfig.dtoPackageName;
 #if($useSwaggerUI)
 @io.swagger.annotations.ApiModel("$table.tableComment")
 #end
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ${table.entityName}${tablesConfig.dtoSuffixName} #if($serializable) implements java.io.Serializable #end {
     #if($serializable)
     private static final long serialVersionUID = 1L;

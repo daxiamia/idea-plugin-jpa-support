@@ -18,8 +18,12 @@ import ${tablesConfig.dtoPackageName}.${entitySimpleName}${tablesConfig.dtoSuffi
 #end
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import java.util.*;
+import jakarta.persistence.criteria.Predicate;
 
 @Service
 public class ${simpleName} {
@@ -44,14 +48,33 @@ public class ${simpleName} {
         ${repositoryVariableName}.save(bean);
     }
 
-    public ${entitySimpleName}${tablesConfig.dtoSuffixName} get$entitySimpleNameById($primaryKeyDataType id) {
-        ${entitySimpleName} original = requireOne$entitySimpleName(id);
-        return to${tablesConfig.dtoSuffixName}(original);
+    public ${entitySimpleName} get${entitySimpleName}ById($primaryKeyDataType id) {
+        return requireOne$entitySimpleName(id);
     }
 
-    public Page<${entitySimpleName}DTO> query$entitySimpleName(${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
-        throw new UnsupportedOperationException();
+    public Page<${entitySimpleName}> query$entitySimpleName(${entitySimpleName}Query${tablesConfig.voSuffixName} ${tablesConfig.voSuffixVariableName}) {
+        Specification<${entitySimpleName}> specification = (root, query, cb) -> {
+        List<Predicate> predicatesList = new LinkedList<>();
+            // if (!Objects.isNull(planType)) {
+            //     Predicate planTypeP = cb.equal(root.get("planType"), planType);
+            //     predicatesList.add(planTypeP);
+            // }
+            // if (StringUtils.isNotBlank(createBy)) {
+            //     Expression<String> exp = root.get("createBy");
+            //     predicatesList.add(exp.in(Arrays.asList(createBy.split(","))));
+            // }
+            // if (StringUtils.isNotBlank(planStatus)) {
+            //     Expression<Integer> exp = root.get("planStatus");
+            //     List<Integer> list = Arrays.stream(planStatus.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+            //     predicatesList.add(exp.in(list));
+            // }
+            return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
+        };
+        int page = Objects.isNull(vO.getPage()) ? 1 : vO.getPage();
+        int size = !Objects.isNull(vO.getSize()) ? 50 : vO.getSize();
+        return ${repositoryVariableName}.findAll(specification, PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id")));
     }
+
 
     private ${entitySimpleName}${tablesConfig.dtoSuffixName} to${tablesConfig.dtoSuffixName}(${entitySimpleName} original) {
         ${entitySimpleName}${tablesConfig.dtoSuffixName} bean = new ${entitySimpleName}${tablesConfig.dtoSuffixName}();
